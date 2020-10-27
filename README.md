@@ -31,6 +31,6 @@ ou
 
 ## Autores ##
 
-[Guilherme Sabino](https://github.com/fersasil)
-[Mayara Ogliari](https://github.com/mayara-ogliari)
-[Ruan Pato](https://github.com/ruanpato)
+- [Guilherme Sabino](https://github.com/fersasil)
+- [Mayara Ogliari](https://github.com/mayara-ogliari)
+- [Ruan Pato](https://github.com/ruanpato)

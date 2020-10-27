@@ -1,0 +1,35 @@
+{
+	"name": "ru-server",
+	"version": "0.0.0",
+	"description": "RU Server",
+	"main": "src/app.js",
+	"scripts": {
+		"start": "node src/app.js",
+		"dev": "nodemon src/app.js -e development",
+		"dev:lint": "nodemon src/app.js --exec 'npm run lint && node'",
+		"lint": "eslint src --ext .js",
+		"lint:fix": "eslint src --ext .js --fix"
+	},
+	"devDependencies": {
+		"eslint": "^7.12.0",
+		"eslint-config-airbnb-base": "^14.2.0",
+		"eslint-plugin-header": "^3.1.0",
+		"eslint-plugin-import": "^2.22.1",
+		"nodemon": "^2.0.4"
+	},
+	"dependencies": {
+		"body-parser": "^1.19.0",
+		"command-line-args": "^5.1.1",
+		"cors": "^2.8.5",
+		"dotenv": "^8.2.0",
+		"express": "^4.17.1",
+		"jsonwebtoken": "^8.5.1",
+		"mariadb": "^2.4.2"
+	},
+	"repository": {
+		"type": "git",
+		"url": ""
+	},
+	"author": "Ruan Pato",
+	"license": ""
+}

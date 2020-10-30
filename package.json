@@ -16,10 +16,11 @@
 		"ext": "js, env"
 	},
 	"scripts": {
-		"setup": "npm install -G && node util/setupDatabase.js",
+		"setup": "npm install -G && node util/database/setupDatabase.js",
 		"start": "node src/app.js",
 		"dev": "nodemon src/app.js",
-		"dev:lint": "nodemon --config nodemonLint.json",
+		"dev:lint": "nodemon --exec 'npm run lint && npm run dev'",
+		"dev:lint:fix": "nodemon --exec 'npm run lint:fix && npm run dev'",
 		"lint": "eslint src --ext .js",
 		"lint:fix": "eslint src --ext .js --fix"
 	},

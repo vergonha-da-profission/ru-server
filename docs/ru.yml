@@ -18,8 +18,8 @@ tags:
 paths:
   /exemplo/getLorem?id={id}&word={word}:
     get:
-      summary: Retorna um conjunto de dados baseado na requisição
-      description: Rota usada para retornar as palavras cadastradas no banco de acordo com a requisição.
+      summary: 'Retorna um conjunto de dados baseado na requisição'
+      description: 'Rota usada para retornar as palavras cadastradas no banco de acordo com a requisição.'
       tags:
         - exemplo
       parameters:
@@ -40,10 +40,62 @@ paths:
           $ref: '#/components/responses/GetAllIdAndWords'
         '422':
           $ref: '#/components/responses/UnprocessableEntityIdAndWord'
+
+  /exemplo/setLorem:
+    post:
+      summary: 'Retorna a confirmação de uma inserção bem sucedida'
+      description: 'Rota usada para cadastrar palavaras na base de dados.'
+      tags:
+        - exemplo      
+      requestBody:
+        description: 'Um String com pelo menos dois caracteres'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Word'
+      responses:
+        '201':
+          $ref: '#/components/responses/NewLorem'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityWord'
       x-codegen-request-body-name: body
+
+  /exemplo/updateLorem:
+    put:
+      summary: 'Retorna a confirmação de uma edição bem sucedida'
+      description: 'Rota usada para editar as palavras cadastradas no banco de dados.'
+      tags:
+        - exemplo      
+      requestBody:
+        description: 'O ID da palavra que deseja-se editar e uma String com pelo menos dois caracteres'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdWord'
+      responses:
+        '201':
+          $ref: '#/components/responses/EditedLorem'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityWord'
+      x-codegen-request-body-name: body
+
 components:
   schemas:
+    Word:
+      type: object
+      properties:
+        word:
+          type: string
     IdWord:
+      type: object
+      properties:
+        id:
+          type: integer
+        word:
+          type: string
+    IdWordArray:
       type: array
       items:
         type: object
@@ -51,6 +103,17 @@ components:
           id:
             type: integer
           word:
+            type: string
+    IdWordMessage:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          word:
+            type: string
+          message:
             type: string
     IdWord422:
       description: One or more fields are malformed
@@ -78,6 +141,25 @@ components:
                   type: string
                 rule:
                   type: string
+    Word422:
+      description: One or more fields are malformed
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+        error:
+          description: This field can have a some errors as dynamically way
+          type: object
+          properties:
+            word:
+              type: object
+              properties:
+                message:
+                  type: string
+                rule:
+                  type: string
     Error:
       description: Unauthorized
       type: object
@@ -92,12 +174,24 @@ components:
           type: string
 
   responses:
+    NewLorem:
+      description: Confirmação de palavra criado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IdWordMessage'
+    EditedLorem:
+      description: Confirmação de palavra editada
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IdWordMessage'
     GetAllIdAndWords:
       description: Retorno de todos ids e words
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/IdWord'
+            $ref: '#/components/schemas/IdWordArray'
     Unauthorized:
       description: Unauthorized
       content:
@@ -134,6 +228,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/IdWord422'
+    UnprocessableEntityWord:
+      description: Um ou mais campos são mal formados
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Word422'
     InternalServerError:
       description: Erro interno
       content:

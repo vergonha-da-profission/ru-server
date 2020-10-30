@@ -1,7 +1,9 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const morgan = require('morgan');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const slogger = require('node-slogger');
+
 const router = require('./routes/routes');
 require('../util/envLoader');
 
@@ -14,7 +16,12 @@ const app = express();
 // Middlewares Section
 app.use(bodyParser.json());
 app.use(cors());
-app.use('/api', router);
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan(':method :url :response-time'));
+}
+
+app.use('/app', router);
 
 app.listen(port, server, () => {
   slogger.info(`Server is listening at ${protocol}://${server}:${port}`);

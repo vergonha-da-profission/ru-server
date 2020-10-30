@@ -1,5 +1,4 @@
 const dotenv = require('dotenv');
-const path = require('path')
 const commandLineArgs = require("command-line-args");
 
 // Setup command line options
@@ -7,16 +6,17 @@ const options = commandLineArgs([
     {
         name: "env",
         alias: "e",
-        defaultValue: "devlopment",
+        defaultValue: "development",
         type: String,
     },
 ]);
 
 // Setting the env file
-const dotenvConfig = dotenv.config({
+const result2 = dotenv.config({
     path: `env/${options.env}.env`,
 });
 
-if (dotenvConfig.error) {
-    throw dotenvConfig.error;
+
+if (result2.error) {
+    throw result2.error;
 }

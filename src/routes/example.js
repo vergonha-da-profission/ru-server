@@ -1,10 +1,10 @@
 const express = require('express');
-const slogger = require('node-slogger');
+const exampleController = require('../controllers/example');
 
 const router = express.Router();
 
-router.get('/batata', () => {
-  slogger.info('Batata');
-});
+router.get('/getLorem', exampleController.getLorem);
+router.post('/setLorem', exampleController.setLorem);
+router.put('/updateLorem', exampleController.updateLorem);
 
 module.exports = router;

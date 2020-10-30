@@ -3,10 +3,23 @@
 	"version": "0.0.0",
 	"description": "RU Server",
 	"main": "src/app.js",
+	"nodemonConfig": {
+		"watch": [
+			"src",
+			"env",
+			"util"
+		],
+		"ignore": [
+			"public/*",
+			"docs/*"
+		],
+		"ext": "js, env"
+	},
 	"scripts": {
+		"setup": "npm install -G && node util/setupDatabase.js",
 		"start": "node src/app.js",
-		"dev": "nodemon src/app.js -e development",
-		"dev:lint": "nodemon src/app.js --exec 'npm run lint && node'",
+		"dev": "nodemon src/app.js",
+		"dev:lint": "nodemon --config nodemonLint.json",
 		"lint": "eslint src --ext .js",
 		"lint:fix": "eslint src --ext .js --fix"
 	},
@@ -18,19 +31,22 @@
 		"nodemon": "^2.0.6"
 	},
 	"dependencies": {
+		"node-input-validator": "^4.2.1",
 		"body-parser": "^1.19.0",
 		"command-line-args": "^5.1.1",
 		"cors": "^2.8.5",
 		"dotenv": "^8.2.0",
 		"express": "^4.17.1",
 		"jsonwebtoken": "^8.5.1",
-		"mariadb": "^2.5.1",
-		"node-slogger": "^2.2.0"
+		"mysql": "^2.18.1",
+		"node-querybuilder": "^2.1.1",
+		"node-slogger": "^2.2.0",
+		"morgan": "^1.10.0"
 	},
 	"repository": {
 		"type": "git",
 		"url": ""
 	},
 	"author": "Ruan Pato",
-	"license": ""
+	"license": "https://github.com/vergonha-da-profission/ru-server"
 }

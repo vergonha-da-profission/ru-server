@@ -12,6 +12,8 @@ Repositório para armazenar o código da API Node.js e os demais componentes do 
 
 Com o terminal aberto no diretório deste repositório(e.g. /home/yourUserName/Documents/ru-server$) rode:
 
+0. Script que criei para facilitar tudo (instala dependências, apaga e recria o banco):
+>npm run setup
 1. Para instalar as dependências:
 >npm install
 2. Para iniciar o servidor com node:

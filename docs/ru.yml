@@ -1,0 +1,147 @@
+openapi: 3.0.1
+info:
+  title: RU
+  description: Facilitador de acesso à Restaurante Universitário
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    name: RU
+    url: 'https://github.com/Vergonha-da-Profission/'
+  license:
+    name: CC BY-NC-ND 4.0
+    url: 'https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.pt'
+  version: '0.1'
+servers:
+  - url: 'http://localhost:3000/api'
+tags:
+  - name: exemplo
+    description: Rotas de exemplo
+paths:
+  /exemplo/getLorem?id={id}&word={word}:
+    get:
+      summary: Retorna um conjunto de dados baseado na requisição
+      description: Rota usada para retornar as palavras cadastradas no banco de acordo com a requisição.
+      tags:
+        - exemplo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 'Um valor booleano que descreve se deseja este campo ou não (se este campo e o word forem falsos, retornará um array com palavra)'
+          schema:
+            type: boolean
+        - name: word
+          in: path
+          required: true
+          description: 'Um valor booleano que descreve se deseja este campo ou não (se este campo e o id forem falsos, retornará um array com palavra)'
+          schema:
+            type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAllIdAndWords'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityIdAndWord'
+      x-codegen-request-body-name: body
+components:
+  schemas:
+    IdWord:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+          word:
+            type: string
+    IdWord422:
+      description: One or more fields are malformed
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+        error:
+          description: This field can have a some errors as dynamically way
+          type: object
+          properties:
+            id:
+              type: object
+              properties:
+                message:
+                  type: string
+                rule:
+                  type: string
+            word:
+              type: object
+              properties:
+                message:
+                  type: string
+                rule:
+                  type: string
+    Error:
+      description: Unauthorized
+      type: object
+      properties:
+        error:
+          type: string
+    NotFound:
+      description: Page not Found
+      type: object
+      properties:
+        error:
+          type: string
+
+  responses:
+    GetAllIdAndWords:
+      description: Retorno de todos ids e words
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IdWord'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Falha na validação de inputs
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFound'
+    NotAcceptable:
+      description: Campo faltando
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Entradas duplicadas
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnprocessableEntityIdAndWord:
+      description: Um ou mais campos são mal formados
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IdWord422'
+    InternalServerError:
+      description: Erro interno
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

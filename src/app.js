@@ -24,5 +24,5 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/app', router);
 
 app.listen(port, server, () => {
-  log.logPerType((`Server is listening at ${protocol}://${server}:${port}`), 'info');
+  log.info((`Server is listening at ${protocol}://${server}:${port}`), null);
 });

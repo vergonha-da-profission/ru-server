@@ -82,4 +82,4 @@ INSERT INTO `lorem` (`word`) VALUES
 ('Mauris'),
 ('mollis'),
 ('accumsan'),
-('nisi')
+('nisi');

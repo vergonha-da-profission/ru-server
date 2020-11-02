@@ -26,12 +26,16 @@ ou
 >npm run dev
 4. Para iniciar o servidor com nodemon ('live refresh') e eslint:
 >npm run dev:lint
-5. Para iniciar o servidor com nodemon ('live refresh') e eslint fix:
+5. Para iniciar os servidores da API e de sua documentação com nodemon:
+>npm run dev:doc
+6. Para iniciar o servidor com nodemon ('live refresh') e eslint fix:
 >npm run dev:lint:fix
-6. Para iniciar o eslint:
+7. Para iniciar o eslint:
 >npm run lint
-7. Para tentar corrigir erros usando eslint:
+8. Para tentar corrigir erros usando eslint:
 >npm run lint:fix
+9. Para iniciar o servidor da Documentação:
+>npm run doc
 
 ## Autores ##
 

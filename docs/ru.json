@@ -16,7 +16,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000/api"
+      "url": "http://localhost:3000/"
     }
   ],
   "tags": [
@@ -26,7 +26,7 @@
     }
   ],
   "paths": {
-    "/exemplo/getLorem?id={id}&word={word}": {
+    "/example/getLorem?id={id}&word={word}": {
       "get": {
         "summary": "Retorna um conjunto de dados baseado na requisição",
         "description": "Rota usada para retornar as palavras cadastradas no banco de acordo com a requisição.",
@@ -59,11 +59,14 @@
           },
           "422": {
             "$ref": "#/components/responses/UnprocessableEntityIdAndWord"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
     },
-    "/exemplo/setLorem": {
+    "/example/setLorem": {
       "post": {
         "summary": "Retorna a confirmação de uma inserção bem sucedida",
         "description": "Rota usada para cadastrar palavaras na base de dados.",
@@ -87,12 +90,15 @@
           },
           "422": {
             "$ref": "#/components/responses/UnprocessableEntityWord"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         },
         "x-codegen-request-body-name": "body"
       }
     },
-    "/exemplo/updateLorem": {
+    "/example/updateLorem": {
       "put": {
         "summary": "Retorna a confirmação de uma edição bem sucedida",
         "description": "Rota usada para editar as palavras cadastradas no banco de dados.",
@@ -116,6 +122,41 @@
           },
           "422": {
             "$ref": "#/components/responses/UnprocessableEntityWord"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/example/deleteLorem": {
+      "delete": {
+        "summary": "Retorna a confirmação de uma remoção bem sucedida",
+        "description": "Rota usada para deletar as palavras cadastradas no banco de dados.",
+        "tags": [
+          "exemplo"
+        ],
+        "requestBody": {
+          "description": "O ID da palavra que deseja-se deletar",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Id"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RemovedLorem"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundId"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         },
         "x-codegen-request-body-name": "body"
@@ -124,6 +165,14 @@
   },
   "components": {
     "schemas": {
+      "Id": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          }
+        }
+      },
       "Word": {
         "type": "object",
         "properties": {
@@ -243,11 +292,23 @@
           }
         }
       },
+      "Id404": {
+        "description": "Doesn't exist an word for this ID",
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "type": "integer"
+          }
+        }
+      },
       "Error": {
         "description": "Unauthorized",
         "type": "object",
         "properties": {
-          "error": {
+          "message": {
             "type": "string"
           }
         }
@@ -275,6 +336,16 @@
       },
       "EditedLorem": {
         "description": "Confirmação de palavra editada",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/IdWordMessage"
+            }
+          }
+        }
+      },
+      "RemovedLorem": {
+        "description": "Confirmação de remoção de palavra",
         "content": {
           "application/json": {
             "schema": {
@@ -349,6 +420,16 @@
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/IdWord422"
+            }
+          }
+        }
+      },
+      "NotFoundId": {
+        "description": "Esta ID não existe",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Id404"
             }
           }
         }

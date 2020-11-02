@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const opn = require('opn');
 const log = require('./helpers/lib/log/log');
 
 const router = require('./routes/routes');
@@ -19,9 +20,11 @@ app.use(cors());
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan(':method :url :response-time'));
+  log.info((`Swagger documentation is listening at ${protocol}://${server}:${port}/api/doc`), null);
+  opn(`${protocol}://${server}:${port}/api/doc`); // Open this URL in default Browser
 }
 
-app.use('/app', router);
+app.use('/api', router);
 
 app.listen(port, server, () => {
   log.info((`Server is listening at ${protocol}://${server}:${port}`), null);

@@ -17,22 +17,21 @@
 	},
 	"scripts": {
 		"setup": "npm install -G && node util/database/setupDatabase.js",
+		"setup:dep": "npm install -G",
+		"setup:db": "node util/database/setupDatabase.js",
 		"start": "node src/app.js",
-		"doc": "nodemon docs/src/ru.js",
 		"dev": "nodemon src/app.js",
-		"dev:doc": "concurrently \"npm run doc\" \"npm run dev\"",
-		"dev:lint": "concurrently  \"npm run lint\" \"npm run dev\"",
-		"dev:lint:fix": "concurrently  \"npm run lint:fix\" \"npm run dev\"",
-		"lint": "eslint .",
-		"lint:fix": "eslint . --fix"
+		"dev:lint": "npm run lint & npm run dev",
+		"dev:lint:fix": "npm run lint:fix &npm run dev",
+		"lint": "nodemon --exec 'eslint .'",
+		"lint:fix": "nodemon --exec 'eslint . --fix'"
 	},
 	"devDependencies": {
 		"eslint": "^7.12.0",
 		"eslint-config-airbnb-base": "^14.2.0",
 		"eslint-plugin-header": "^3.1.0",
 		"eslint-plugin-import": "^2.22.1",
-		"nodemon": "^2.0.6",
-		"concurrently": "^5.3.0"
+		"nodemon": "^2.0.6"
 	},
 	"dependencies": {
 		"node-input-validator": "^4.2.1",

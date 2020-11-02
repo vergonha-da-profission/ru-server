@@ -92,3 +92,34 @@ exports.updateLorem = async (req, res, next) => {
   }
   return res.status(500).json({ message: 'Internal Error' });
 };
+
+exports.deleteLorem = async (req, res, next) => {
+  const { id } = req.body;
+  const validator = new Validator(
+    { id }, {
+      id: 'required|integer',
+    },
+  );
+  const inputIsValid = await validator.check();
+  if (!inputIsValid) {
+    return res.status(422).json({
+      message: 'One or more fields are malformed',
+      code: 422,
+      error: validator.errors,
+    });
+  }
+  try {
+    const { deletedRow, affectedRows } = await exampleModel.deleteLorem(id);
+    if (affectedRows === 'Inválid ID') {
+      return res.status(404).json({
+        message: 'Doesn\'t exist an word for this ID',
+        code: 404,
+      });
+    } if (affectedRows > 0) {
+      return res.status(200).json({ id: deletedRow.id, word: deletedRow.word, message: 'Lorem deleted suscessfully.' });
+    }
+  } catch (err) {
+    return next(err);
+  }
+  return res.status(500).json({ message: 'Internal Error' });
+};

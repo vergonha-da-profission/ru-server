@@ -1,6 +1,0 @@
-{
-  "watch": ["src", "env", "util"],
-  "ext": "js, env",
-  "ignore": ["src/public"],
-  "exec": "npm run lint && nodemon src/app.js"
-}

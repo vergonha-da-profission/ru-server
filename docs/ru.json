@@ -1,0 +1,466 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "RU",
+    "description": "Facilitador de acesso à Restaurante Universitário",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "name": "RU",
+      "url": "https://github.com/Vergonha-da-Profission/"
+    },
+    "license": {
+      "name": "CC BY-NC-ND 4.0",
+      "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.pt"
+    },
+    "version": "0.1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "exemplo",
+      "description": "Rotas de exemplo"
+    }
+  ],
+  "paths": {
+    "/example/getLorem?id={id}&word={word}": {
+      "get": {
+        "summary": "Retorna um conjunto de dados baseado na requisição",
+        "description": "Rota usada para retornar as palavras cadastradas no banco de acordo com a requisição.",
+        "tags": [
+          "exemplo"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Um valor booleano que descreve se deseja este campo ou não (se este campo e o word forem falsos, retornará um array com palavra)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "word",
+            "in": "path",
+            "required": true,
+            "description": "Um valor booleano que descreve se deseja este campo ou não (se este campo e o id forem falsos, retornará um array com palavra)",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/GetAllIdAndWords"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntityIdAndWord"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/example/setLorem": {
+      "post": {
+        "summary": "Retorna a confirmação de uma inserção bem sucedida",
+        "description": "Rota usada para cadastrar palavaras na base de dados.",
+        "tags": [
+          "exemplo"
+        ],
+        "requestBody": {
+          "description": "Um String com pelo menos dois caracteres",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Word"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/NewLorem"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntityWord"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/example/updateLorem": {
+      "put": {
+        "summary": "Retorna a confirmação de uma edição bem sucedida",
+        "description": "Rota usada para editar as palavras cadastradas no banco de dados.",
+        "tags": [
+          "exemplo"
+        ],
+        "requestBody": {
+          "description": "O ID da palavra que deseja-se editar e uma String com pelo menos dois caracteres",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdWord"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/EditedLorem"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntityWord"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/example/deleteLorem": {
+      "delete": {
+        "summary": "Retorna a confirmação de uma remoção bem sucedida",
+        "description": "Rota usada para deletar as palavras cadastradas no banco de dados.",
+        "tags": [
+          "exemplo"
+        ],
+        "requestBody": {
+          "description": "O ID da palavra que deseja-se deletar",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Id"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/RemovedLorem"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundId"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Id": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          }
+        }
+      },
+      "Word": {
+        "type": "object",
+        "properties": {
+          "word": {
+            "type": "string"
+          }
+        }
+      },
+      "IdWord": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "word": {
+            "type": "string"
+          }
+        }
+      },
+      "IdWordArray": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "word": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "IdWordMessage": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "word": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "IdWord422": {
+        "description": "One or more fields are malformed",
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "type": "integer"
+          },
+          "error": {
+            "description": "This field can have a some errors as dynamically way",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "rule": {
+                    "type": "string"
+                  }
+                }
+              },
+              "word": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "rule": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Word422": {
+        "description": "One or more fields are malformed",
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "type": "integer"
+          },
+          "error": {
+            "description": "This field can have a some errors as dynamically way",
+            "type": "object",
+            "properties": {
+              "word": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "rule": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Id404": {
+        "description": "Doesn't exist an word for this ID",
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "type": "integer"
+          }
+        }
+      },
+      "Error": {
+        "description": "Unauthorized",
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Page not Found",
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "NewLorem": {
+        "description": "Confirmação de palavra criado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/IdWordMessage"
+            }
+          }
+        }
+      },
+      "EditedLorem": {
+        "description": "Confirmação de palavra editada",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/IdWordMessage"
+            }
+          }
+        }
+      },
+      "RemovedLorem": {
+        "description": "Confirmação de remoção de palavra",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/IdWordMessage"
+            }
+          }
+        }
+      },
+      "GetAllIdAndWords": {
+        "description": "Retorno de todos ids e words",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/IdWordArray"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Falha na validação de inputs",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The specified resource was not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/NotFound"
+            }
+          }
+        }
+      },
+      "NotAcceptable": {
+        "description": "Campo faltando",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Entradas duplicadas",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "UnprocessableEntityIdAndWord": {
+        "description": "Um ou mais campos são mal formados",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/IdWord422"
+            }
+          }
+        }
+      },
+      "NotFoundId": {
+        "description": "Esta ID não existe",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Id404"
+            }
+          }
+        }
+      },
+      "UnprocessableEntityWord": {
+        "description": "Um ou mais campos são mal formados",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Word422"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Erro interno",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

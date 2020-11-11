@@ -1,58 +1,58 @@
 {
-	"name": "ru-server",
-	"version": "0.0.0",
-	"description": "RU Server",
-	"main": "src/app.js",
-	"nodemonConfig": {
-		"watch": [
-			"src",
-			"env",
-			"util"
-		],
-		"ignore": [
-			"public/*",
-			"docs/*"
-		],
-		"ext": "js, env"
-	},
-	"scripts": {
-		"setup": "npm install -G && node util/database/setupDatabase.js",
-		"setup:dep": "npm install -G",
-		"setup:db": "node util/database/setupDatabase.js",
-		"start": "node src/app.js",
-		"dev": "nodemon src/app.js",
-		"dev:lint": "npm run lint & npm run dev",
-		"dev:lint:fix": "npm run lint:fix &npm run dev",
-		"lint": "nodemon --exec 'eslint .'",
-		"lint:fix": "nodemon --exec 'eslint . --fix'"
-	},
-	"devDependencies": {
-		"eslint": "^7.12.0",
-		"eslint-config-airbnb-base": "^14.2.0",
-		"eslint-plugin-header": "^3.1.0",
-		"eslint-plugin-import": "^2.22.1",
-		"nodemon": "^2.0.6"
-	},
-	"dependencies": {
-		"node-input-validator": "^4.2.1",
-		"body-parser": "^1.19.0",
-		"command-line-args": "^5.1.1",
-		"cors": "^2.8.5",
-		"dotenv": "^8.2.0",
-		"express": "^4.17.1",
-		"jsonwebtoken": "^8.5.1",
-		"mysql": "^2.18.1",
-		"node-querybuilder": "^2.1.1",
-		"node-slogger": "^2.2.0",
-		"morgan": "^1.10.0",
-		"js-yaml": "^3.14.0",
-		"swagger-ui-express": "^4.1.4",
-		"opn": "^6.0.0"
-	},
-	"repository": {
-		"type": "git",
-		"url": ""
-	},
-	"author": "Ruan Pato",
-	"license": "https://github.com/vergonha-da-profission/ru-server"
+  "name": "ru-server",
+  "version": "0.0.0",
+  "description": "RU Server",
+  "main": "src/app.js",
+  "nodemonConfig": {
+    "watch": [
+      "src",
+      "env",
+      "util"
+    ],
+    "ignore": [
+      "public/*",
+      "docs/*"
+    ],
+    "ext": "js, env"
+  },
+  "scripts": {
+    "setup": "npm install -G && node util/database/setupDatabase.js",
+    "setup:dep": "npm install -G",
+    "setup:db": "node util/database/setupDatabase.js",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "dev:lint": "npm run lint & npm run dev",
+    "dev:lint:fix": "npm run lint:fix &npm run dev",
+    "lint": "nodemon --exec 'eslint .'",
+    "lint:fix": "nodemon --exec 'eslint . --fix'"
+  },
+  "devDependencies": {
+    "eslint": "^7.12.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-header": "^3.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "command-line-args": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "js-yaml": "^3.14.0",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
+    "node-input-validator": "^4.2.1",
+    "node-querybuilder": "^2.1.1",
+    "node-slogger": "^2.2.0",
+    "opn": "^6.0.0",
+    "swagger-ui-express": "^4.1.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Ruan Pato",
+  "license": "https://github.com/vergonha-da-profission/ru-server"
 }

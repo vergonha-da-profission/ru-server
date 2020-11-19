@@ -1,10 +1,10 @@
 const { getQueryBuilder } = require('../helpers/queryBuilder');
 
-exports.getLorem = async (id, word) => {
+exports.findUserByUsername = async (username) => {
   const queryBuilder = await getQueryBuilder();
   try {
-    return queryBuilder.select([id, word])
-      .get('lorem');
+    return queryBuilder.select(['*']).where('username', username)
+      .get('users');
   } finally {
     queryBuilder.release();
   }

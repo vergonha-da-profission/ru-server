@@ -1,5 +1,7 @@
 const { Validator } = require('node-input-validator');
-const exampleModel = require('../models/exampleModel');
+const crypto = require('crypto');
+const userModel = require('../models/userModel');
+const { generateToken } = require('../helpers/authHelper');
 
 async function getArrayOfWords(lorem) {
   const words = [];
@@ -19,9 +21,9 @@ exports.getLorem = async (req, res, next) => {
   const { id, word } = req.query;
   const validator = new Validator(
     { id, word }, {
-      id: 'required|boolean',
-      word: 'required|boolean',
-    },
+    id: 'required|boolean',
+    word: 'required|boolean',
+  },
   );
   const inputIsValid = await validator.check();
   if (!inputIsValid) {
@@ -40,11 +42,13 @@ exports.getLorem = async (req, res, next) => {
   }
 };
 
-exports.setLorem = async (req, res, next) => {
-  const { word } = req.body;
+exports.login = async (req, res, next) => {
+  const { username, password } = req.body;
+
   const validator = new Validator(
-    { word }, {
-      word: 'required|minLength:2',
+    { username, password }, {
+      username: 'required|minLength:3',
+      password: 'required|minLength:2',
     },
   );
   const inputIsValid = await validator.check();
@@ -56,23 +60,32 @@ exports.setLorem = async (req, res, next) => {
     });
   }
   try {
-    const setRes = await exampleModel.setLorem(word);
-    if (setRes.insertId) {
-      return res.status(201).json({ id: setRes.insertId, word, message: 'Lorem created suscessfully.' });
+    const hashPassword = crypto.createHash('sha256').update(password).digest('hex');
+
+    const user = await userModel.findUserByUsername(username);
+    if (user[0] === undefined) {
+      return res.json({ message: 'User Or Password incorrect' });
     }
+    if (user[0].password !== hashPassword) {
+      return res.json({ message: 'User Or Password incorrect' });
+    }
+    return res.json({
+      name: user[0].name,
+      username: user[0].username,
+      token: generateToken({ userId: user[0].id }),
+    });
   } catch (err) {
     return next(err);
   }
-  return res.status(500).json({ message: 'Internal Error' });
 };
 
 exports.updateLorem = async (req, res, next) => {
   const { id, word } = req.body;
   const validator = new Validator(
     { id, word }, {
-      id: 'required|integer',
-      word: 'required|minLength:2',
-    },
+    id: 'required|integer',
+    word: 'required|minLength:2',
+  },
   );
   const inputIsValid = await validator.check();
   if (!inputIsValid) {
@@ -97,8 +110,8 @@ exports.deleteLorem = async (req, res, next) => {
   const { id } = req.body;
   const validator = new Validator(
     { id }, {
-      id: 'required|integer',
-    },
+    id: 'required|integer',
+  },
   );
   const inputIsValid = await validator.check();
   if (!inputIsValid) {

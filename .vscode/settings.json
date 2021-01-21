@@ -4,5 +4,11 @@
         "activityBar.background": "#00693e",
         "titleBar.activeBackground": "#008f45",
         "titleBar.activeForeground": "#FBFCFF"
+    },
+    "[yaml]": {
+    
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.autoIndent": "advanced"
     }
 }

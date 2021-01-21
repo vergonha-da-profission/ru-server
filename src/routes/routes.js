@@ -6,4 +6,6 @@ router.use('/auth', require('./auth'));
 
 router.use('/doc', require('./swagger'));
 
+router.use('/user', require('./user'));
+
 module.exports = router;

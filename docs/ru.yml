@@ -11,7 +11,7 @@ info:
     url: 'https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.pt'
   version: '0.1'
 servers:
-  - url: 'http://localhost:3000/'
+  - url: 'http://localhost:3000/api/'
 tags:
   - name: exemplo
     description: Rotas de exemplo

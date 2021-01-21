@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-router.use('/example', require('./example'));
+router.use('/auth', require('./auth'));
 
 router.use('/doc', require('./swagger'));
 

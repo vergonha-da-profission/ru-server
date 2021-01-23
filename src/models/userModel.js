@@ -19,3 +19,21 @@ user = {
     queryBuilder.release();
   }
 };
+exports.insertQrCode = async (user) => {
+  const queryBuilder = await getQueryBuilder();
+  try {
+    return queryBuilder.update(
+      'user',
+      {
+        qr_code: user.qr_code,
+      },
+      {
+        id: user.id,
+      },
+    );
+  } catch (err) {
+    throw new Error(err);
+  } finally {
+    queryBuilder.release();
+  }
+};

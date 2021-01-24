@@ -8,4 +8,6 @@ router.use('/doc', require('./swagger'));
 
 router.use('/user', require('./user'));
 
+router.use('/transaction', require('./transaction'));
+
 module.exports = router;

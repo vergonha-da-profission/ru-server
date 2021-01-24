@@ -40,7 +40,7 @@ exports.createUser = async (req, res, next) => {
   try {
     const insertResponse = await userModel.createUser(user);
     if (insertResponse.insertId) {
-      user.qr_code = await qrCode.createImage(insertResponse.insertId, user.cpf);
+      user.qr_code = await qrCode.createImage(insertResponse.insertId);
       await userModel.insertQrCode({ id: insertResponse.insertId, qr_code: user.qr_code });
       if (user.qr_code.toString() === 'can\'t create image') {
         return res.status(400).json({
@@ -65,4 +65,29 @@ exports.createUser = async (req, res, next) => {
     return next(err);
   }
   return res.status(500).json({ message: 'Internal Error' });
+};
+
+exports.getBalanceById = async (req, res, next) => {
+  const user = req.body;
+  const validator = new Validator(
+    user, {
+      id: 'required|digits',
+    },
+  );
+  const inputIsValid = await validator.check();
+  if (!inputIsValid) {
+    return res.status(422).json({
+      message: 'One or more fields are malformed',
+      code: 422,
+      error: validator.errors,
+    });
+  }
+  try {
+    const selectResponse = await userModel.getBalance(user);
+    return res.status(200).json({
+      balance: selectResponse,
+    });
+  } catch (err) {
+    return next(err);
+  }
 };

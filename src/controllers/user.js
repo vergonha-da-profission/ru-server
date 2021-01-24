@@ -1,6 +1,7 @@
 const { Validator } = require('node-input-validator');
 
 const userModel = require('../models/userModel');
+const transactionModel = require('../models/transactionModel');
 const validate = require('../helpers/validate');
 const qrCode = require('../helpers/qrCode');
 const avatar = require('../helpers/avatar');
@@ -86,6 +87,48 @@ exports.getBalanceById = async (req, res, next) => {
     const selectResponse = await userModel.getBalance(user);
     return res.status(200).json({
       balance: selectResponse,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.getProfileInfoById = async (req, res, next) => {
+  const user = req.query;
+  const validator = new Validator(
+    user, {
+      id: 'required',
+    },
+  );
+  const inputIsValid = await validator.check();
+  if (!inputIsValid) {
+    return res.status(422).json({
+      message: 'One or more fields are malformed',
+      code: 422,
+      error: validator.errors,
+    });
+  }
+  try {
+    const selectResponse = (await userModel.getProfileInfoById(user.id))[0];
+    const transactions = (await transactionModel.getAllTransactionByUserId(user.id))
+      .map((element) => ({
+        name: element.name,
+        type: element.value > 0 ? 'incoming' : 'outcoming',
+        price: element.value,
+        description: element.description,
+        time: (element.date_time.toISOString().replace('T', ' ')).split('.')[0],
+      }));
+    return res.status(200).json({
+      user: {
+        full_name: selectResponse.name,
+        email: selectResponse.email,
+        iduffs: selectResponse.id_uffs,
+        qrCodeUrl: selectResponse.qr_code,
+        profilePicture: selectResponse.avatar,
+        cpf: selectResponse.cpf,
+        balance: selectResponse.balance,
+        transactions,
+      },
     });
   } catch (err) {
     return next(err);

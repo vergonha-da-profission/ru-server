@@ -10,3 +10,16 @@ exports.createTransaction = async (transaction) => {
     queryBuilder.release();
   }
 };
+
+exports.getAllTransactionByUserId = async (userId) => {
+  const queryBuilder = await getQueryBuilder();
+  try {
+    return queryBuilder.select('*')
+      .where({ 'user_id = ': userId })
+      .get('transaction');
+  } catch (err) {
+    throw new Error(err);
+  } finally {
+    queryBuilder.release();
+  }
+};

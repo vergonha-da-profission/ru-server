@@ -24,12 +24,15 @@ exports.login = async (req, res, next) => {
     const hashPassword = crypto.createHash('sha256').update(password).digest('hex');
 
     const user = await userModel.findByEmail(username);
+
     if (user[0] === undefined) {
       return res.json({ message: 'User Or Password incorrect' });
     }
+
     if (user[0].password !== hashPassword) {
       return res.json({ message: 'User Or Password incorrect' });
     }
+
     return res.json({
       name: user[0].name,
       username: user[0].username,

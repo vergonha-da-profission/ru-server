@@ -16,14 +16,14 @@ CREATE TABLE IF NOT EXISTS `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Returns type like incoming, outcoming by value positive or negative, */
-CREATE TABLE IF NOT EXISTS `transfer_history` (
+CREATE TABLE IF NOT EXISTS `transaction` (
   `id` INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
-  `description` VARCHAR(255),
+  `description` VARCHAR(255) NOT NULL, /* Is the origin */
   `value` REAL NOT NULL DEFAULT '0.0',
   `date_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_id` INT(11) NOT NULL,
-  CONSTRAINT `fk_user_transfer_history`
+  CONSTRAINT `fk_user_transctions`
     FOREIGN KEY (`user_id`)
       REFERENCES `user` (`id`)
       ON DELETE CASCADE

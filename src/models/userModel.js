@@ -19,6 +19,7 @@ user = {
     queryBuilder.release();
   }
 };
+
 exports.insertQrCode = async (user) => {
   const queryBuilder = await getQueryBuilder();
   try {
@@ -31,6 +32,56 @@ exports.insertQrCode = async (user) => {
         id: user.id,
       },
     );
+  } catch (err) {
+    throw new Error(err);
+  } finally {
+    queryBuilder.release();
+  }
+};
+
+exports.getBalance = async (user) => {
+  const queryBuilder = await getQueryBuilder();
+  try {
+    return queryBuilder.select('balance')
+      .where({ 'id = ': user.id })
+      .get('user');
+  } catch (err) {
+    throw new Error(err);
+  } finally {
+    queryBuilder.release();
+  }
+};
+
+exports.changeBalance = async ({ id, balance }) => {
+  const queryBuilder = await getQueryBuilder();
+  try {
+    return queryBuilder.update('user', { balance }, { id });
+  } catch (err) {
+    throw new Error(err);
+  } finally {
+    queryBuilder.release();
+  }
+};
+
+exports.findByEmail = async (user) => {
+  const queryBuilder = await getQueryBuilder();
+  try {
+    return queryBuilder.select('name', 'username', 'password')
+      .where({ 'email = ': user.email })
+      .get('user');
+  } catch (err) {
+    throw new Error(err);
+  } finally {
+    queryBuilder.release();
+  }
+};
+
+exports.getTransactionDataById = async (user) => {
+  const queryBuilder = await getQueryBuilder();
+  try {
+    return queryBuilder.select('avatar, name, balance')
+      .where({ 'id = ': user.id })
+      .get('user');
   } catch (err) {
     throw new Error(err);
   } finally {

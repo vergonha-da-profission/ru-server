@@ -35,11 +35,11 @@ const showAffectedModifiedRows = async (rows) => {
   const loggerInfoLength = 33;
   if (rows.length > 1) {
     return (`${' '.repeat(loggerInfoLength)}Affected Rows: ${
-      (await getReduceAffectedModifiedRows(rows, 'affectedRows')).toString()
+      (await getReduceAffectedModifiedRows(rows, 'affectedRows'))
     }\n${' '.repeat(loggerInfoLength)}Changed Rows: ${
-      (await getReduceAffectedModifiedRows(rows, 'changedRows')).toString()}`).toString();
+      (await getReduceAffectedModifiedRows(rows, 'changedRows'))}`);
   }
-  return (rows.changedRows + rows.affectedRows).toString;
+  return '';
 };
 
 (async () => {

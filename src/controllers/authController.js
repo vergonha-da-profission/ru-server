@@ -23,7 +23,7 @@ exports.login = async (req, res, next) => {
   try {
     const hashPassword = crypto.createHash('sha256').update(password).digest('hex');
 
-    const user = await userModel.findUserByUsername(username);
+    const user = await userModel.findByEmail(username);
     if (user[0] === undefined) {
       return res.json({ message: 'User Or Password incorrect' });
     }

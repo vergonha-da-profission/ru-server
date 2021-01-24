@@ -43,3 +43,5 @@ app.use('/api', router);
 app.listen(port, server, () => {
   log.info((`Server is listening at ${protocol}://${server}:${port}`), null);
 });
+
+require('./ws');

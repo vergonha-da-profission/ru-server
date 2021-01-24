@@ -5,6 +5,7 @@ const transactionModel = require('../models/transactionModel');
 const validate = require('../helpers/validate');
 const qrCode = require('../helpers/qrCode');
 const avatar = require('../helpers/avatar');
+const auth = require('../helpers/authHelper');
 const { hashPassword } = require('../helpers/encrypt');
 
 exports.createUser = async (req, res, next) => {
@@ -69,22 +70,9 @@ exports.createUser = async (req, res, next) => {
 };
 
 exports.getBalanceById = async (req, res, next) => {
-  const user = req.body;
-  const validator = new Validator(
-    user, {
-      id: 'required|digits',
-    },
-  );
-  const inputIsValid = await validator.check();
-  if (!inputIsValid) {
-    return res.status(422).json({
-      message: 'One or more fields are malformed',
-      code: 422,
-      error: validator.errors,
-    });
-  }
+  const id = auth.getUserIdFromToken(req, res);
   try {
-    const selectResponse = await userModel.getBalance(user);
+    const selectResponse = await userModel.getBalance(id);
     return res.status(200).json({
       balance: selectResponse,
     });

@@ -17,7 +17,7 @@ exports.sendTo = (event) => {
     return;
   }
   clients.forEach((client) => {
-    client.send({ balance: parseFloat(event.data) });
+    client.send(JSON.stringify({ balance: parseFloat(event.data) }));
   });
 };
 

@@ -5,7 +5,6 @@ const transactionModel = require('../models/transactionModel');
 const validate = require('../helpers/validate');
 const qrCode = require('../helpers/qrCode');
 const avatar = require('../helpers/avatar');
-const auth = require('../helpers/authHelper');
 const { hashPassword } = require('../helpers/encrypt');
 
 exports.createUser = async (req, res, next) => {
@@ -70,9 +69,8 @@ exports.createUser = async (req, res, next) => {
 };
 
 exports.getBalanceById = async (req, res, next) => {
-  const id = auth.getUserIdFromToken(req, res);
   try {
-    const selectResponse = await userModel.getBalance(id);
+    const selectResponse = await userModel.getBalance(req.userId);
     return res.status(200).json({
       balance: selectResponse,
     });
@@ -82,23 +80,9 @@ exports.getBalanceById = async (req, res, next) => {
 };
 
 exports.getProfileInfoById = async (req, res, next) => {
-  const user = req.query;
-  const validator = new Validator(
-    user, {
-      id: 'required',
-    },
-  );
-  const inputIsValid = await validator.check();
-  if (!inputIsValid) {
-    return res.status(422).json({
-      message: 'One or more fields are malformed',
-      code: 422,
-      error: validator.errors,
-    });
-  }
   try {
-    const selectResponse = (await userModel.getProfileInfoById(user.id))[0];
-    const transactions = (await transactionModel.getAllTransactionByUserId(user.id))
+    const selectResponse = (await userModel.getProfileInfoById(req.userId))[0];
+    const transactions = (await transactionModel.getAllTransactionByUserId(req.userId))
       .map((element) => ({
         name: element.name,
         type: element.value > 0 ? 'incoming' : 'outcoming',

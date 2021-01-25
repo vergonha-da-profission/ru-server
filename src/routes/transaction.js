@@ -10,13 +10,13 @@ const router = express.Router();
 * @args: header_token
 * @returns: json
 */
-router.post('/add', auth.verifyAuthentication, transactionController.changeBalance);
+router.post('/add', auth.verifyAuthentication, transactionController.increaseBalance);
 
 /*
 * @endpoint: /debt
 * @args: custom_token
 * @returns: json
 */
-router.post('/debt', auth.verifyDebt, transactionController.changeBalance);
+router.post('/debt', auth.verifyDebt, transactionController.decreaseBalance);
 
 module.exports = router;

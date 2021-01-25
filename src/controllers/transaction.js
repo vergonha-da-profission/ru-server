@@ -6,15 +6,17 @@ const balanceEvents = require('../helpers/lib/events/balanceEvents');
 
 exports.changeBalance = async (req, res, next) => {
   const transaction = req.body;
+
   const validator = new Validator(
     transaction, {
-      user_id: 'required|decimal',
-      name: 'required|string',
-      description: 'required|string',
-      value: 'required',
-    },
+    name: 'required|string',
+    description: 'required|string',
+    value: 'required',
+  },
   );
+
   const inputIsValid = await validator.check();
+
   if (!inputIsValid || transaction.value === 0) {
     return res.status(422).json({
       message: 'One or more fields are malformed',
@@ -22,12 +24,16 @@ exports.changeBalance = async (req, res, next) => {
       error: validator.errors,
     });
   }
+
   transaction.date_time = new Date().toISOString()
     .replace(/T/, ' ')
     .replace(/\..+/, '');
+
   try {
-    const user = (await userModel.getTransactionDataById({ id: transaction.user_id }))[0];
+    const user = (await userModel.getTransactionDataById(req.userId))[0];
+
     const balance = parseFloat(user.balance) + parseFloat(transaction.value);
+
     if (balance < 0) {
       return res.status(200).json(
         {
@@ -35,10 +41,16 @@ exports.changeBalance = async (req, res, next) => {
         },
       );
     }
-    await userModel.changeBalance({ id: transaction.user_id, balance });
-    const insertResponse = await transactionModel.createTransaction(transaction);
+
+    await userModel.changeBalance({ id: req.userId, balance });
+
+    const insertResponse = await transactionModel.createTransaction({
+      ...transaction, 
+      user_id: req.userId,
+    });
+
     if (insertResponse.insertId) {
-      balanceEvents.newEvent(transaction.user_id, balance);
+      balanceEvents.newEvent(req.userId, balance);
       return res.status(201).json(
         {
           user: {

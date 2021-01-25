@@ -1,15 +1,15 @@
 const { getQueryBuilder } = require('../helpers/queryBuilder');
 
 exports.createUser = async (user) => {
-/*
-user = {
-  email: "email",
-  password: "hashed_password",
-  name: "Name",
-  id_uffs: "id_uffs"
-  cpf: "cpf"
-}
-*/
+  /*
+  user = {
+    email: "email",
+    password: "hashed_password",
+    name: "Name",
+    id_uffs: "id_uffs"
+    cpf: "cpf"
+  }
+  */
   const queryBuilder = await getQueryBuilder();
   try {
     return queryBuilder.insert('user', user);
@@ -76,11 +76,11 @@ exports.findByEmail = async (username) => {
   }
 };
 
-exports.getTransactionDataById = async (user) => {
+exports.getTransactionDataById = async (userId) => {
   const queryBuilder = await getQueryBuilder();
   try {
     return queryBuilder.select('avatar, name, balance')
-      .where({ 'id = ': user.id })
+      .where({ 'id = ': userId })
       .get('user');
   } catch (err) {
     throw new Error(err);

@@ -4,13 +4,15 @@ require('../../util/envLoader');
 exports.verifyAuthentication = (req, res, next) => {
   try {
     const key = req.headers.authorization.split(' ')[1];
+
     if (!key) {
       return res.status(422).json({
         error: 'Missing Token',
       });
     }
     const decoded = jwt.verify(key, process.env.JWT_SECRET);
-    req.userId = decoded.id;
+
+    req.userId = decoded.userId;
     return next();
   } catch (err) {
     return res.status(403).json({

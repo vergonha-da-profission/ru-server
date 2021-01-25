@@ -88,3 +88,16 @@ exports.getTransactionDataById = async (user) => {
     queryBuilder.release();
   }
 };
+
+exports.getProfileInfoById = async (userId) => {
+  const queryBuilder = await getQueryBuilder();
+  try {
+    return queryBuilder.select('name, email, id_uffs, qr_code, avatar, cpf, balance')
+      .where({ 'id = ': userId })
+      .get('user');
+  } catch (err) {
+    throw new Error(err);
+  } finally {
+    queryBuilder.release();
+  }
+};

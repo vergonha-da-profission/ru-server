@@ -19,4 +19,11 @@ router.post('/add', auth.verifyAuthentication, transactionController.changeBalan
 */
 router.post('/debt', auth.verifyDebt, transactionController.changeBalance);
 
+/*
+* @endpoint: /add
+* @args: auth_token
+* @returns: json
+*/
+router.get('/bill', auth.verifyAuthentication, transactionController.getBillBuffer);
+
 module.exports = router;

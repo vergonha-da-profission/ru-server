@@ -25,10 +25,8 @@ exports.decreaseBalance = async (req, res, next) => {
       error: validator.errors,
     });
   }
-
-  transaction.date_time = new Date().toISOString()
-    .replace(/T/, ' ')
-    .replace(/\..+/, '');
+  const nowArray = (new Date()).toLocaleString().replace(/\//g, '-').split(' ');
+  transaction.date_time = `${nowArray[0].split('-')[2]}-${nowArray[0].split('-')[1]}-${nowArray[0].split('-')[0]} ${nowArray[1]}`;
 
   try {
     const user = (await userModel.getTransactionDataById(transaction.userId))[0];
@@ -97,9 +95,8 @@ exports.increaseBalance = async (req, res, next) => {
     });
   }
 
-  transaction.date_time = new Date().toISOString()
-    .replace(/T/, ' ')
-    .replace(/\..+/, '');
+  const nowArray = (new Date()).toLocaleString().replace(/\//g, '-').split(' ');
+  transaction.date_time = `${nowArray[0].split('-')[2]}-${nowArray[0].split('-')[1]}-${nowArray[0].split('-')[0]} ${nowArray[1]}`;
 
   try {
     const user = (await userModel.getTransactionDataById(req.userId))[0];

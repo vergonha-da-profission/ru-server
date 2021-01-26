@@ -16,7 +16,8 @@ exports.getAllTransactionByUserId = async (userId) => {
   try {
     return queryBuilder.select('*')
       .where({ 'user_id = ': userId })
-      .get('transaction');
+      .get('transaction')
+      .order_by('date_time', 'desc');
   } catch (err) {
     throw new Error(err);
   } finally {

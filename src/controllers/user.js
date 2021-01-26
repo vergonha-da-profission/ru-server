@@ -3,25 +3,25 @@ const { Validator } = require('node-input-validator');
 const userModel = require('../models/userModel');
 const transactionModel = require('../models/transactionModel');
 const validate = require('../helpers/validate');
-const qrCode = require('../helpers/qrCode');
-const avatar = require('../helpers/avatar');
+const qrCodeHelper = require('../helpers/qrCode');
+const avatarHelper = require('../helpers/avatar');
 const { hashPassword } = require('../helpers/encrypt');
 
-exports.createUser = async (req, res, next) => {
-  req.body.password = hashPassword(req.body.password);
+exports.createUser = async (req, res) => {
   const user = req.body;
   const validator = new Validator(
-    user, {
+    user,
+    {
       cpf: 'required|digits:11',
       email: 'required|email',
       password: 'required:minLength:8',
-      username: 'string',
-      name: 'string',
-      id_uffs: 'string',
+      name: 'required|string',
+      id_uffs: 'required|string',
     },
   );
   const inputIsValid = await validator.check();
-  if (!inputIsValid || 'qr_code' in user) {
+
+  if (!inputIsValid) {
     return res.status(422).json({
       message: 'One or more fields are malformed',
       code: 422,
@@ -36,25 +36,28 @@ exports.createUser = async (req, res, next) => {
       });
     }
   }
-  user.avatar = await avatar.createAvatar(user);
+
+  req.body.password = hashPassword(req.body.password);
 
   try {
     const insertResponse = await userModel.createUser(user);
     if (insertResponse.insertId) {
-      user.qr_code = await qrCode.createImage(insertResponse.insertId);
-      await userModel.insertQrCode({ id: insertResponse.insertId, qr_code: user.qr_code });
-      if (user.qr_code.toString() === 'can\'t create image') {
-        return res.status(400).json({
-          message: 'Internal Server Error',
-          code: 400,
-        });
-      }
+      const qrCode = await qrCodeHelper.createImage(insertResponse.insertId);
+      const avatar = await avatarHelper.createAvatar();
+
+      await userModel.updateById(insertResponse.insertId, {
+        qr_code: qrCode,
+        avatar,
+      });
+
       return res.status(201).json(
         {
           user: {
             email: user.email,
-            qr_code: user.qr_code,
+            qr_code: qrCode,
+            profilePicture: avatar,
           },
+
           message: 'User created suscessfully.',
         },
       );
@@ -63,7 +66,11 @@ exports.createUser = async (req, res, next) => {
     if (err.code === 'ER_DUP_ENTRY') {
       return res.status(409).json({ message: 'Some field is already in use.' });
     }
-    return next(err);
+
+    return res.status(400).json({
+      message: 'Internal Server Error',
+      code: 500,
+    });
   }
   return res.status(500).json({ message: 'Internal Error' });
 };

@@ -7,18 +7,16 @@ const path = require('path');
     *@returns: path of image
 */
 exports.createImage = async (userId) => {
-  const destinationPath = `${path.join(__dirname, '../../', 'public')}/qr-code/`;
+  const destinationPath = path.join(__dirname, '..', '..', 'public', 'qr-code');
   const imageName = `${uuidv4()}.png`;
-  try {
-    qrCode.toFile((destinationPath + imageName), userId.toString(), {
-      color: {
-        light: '#0000',
-      },
-      width: 1000,
-      errorCorrectionLevel: 'H',
-    });
-    return imageName;
-  } catch (err) {
-    return 'can\'t create image';
-  }
+
+  qrCode.toFile(`${destinationPath}/${imageName}`, userId.toString(), {
+    color: {
+      light: '#0000',
+    },
+    width: 1000,
+    errorCorrectionLevel: 'H',
+  });
+
+  return `/public/qr-code/${imageName}`;
 };

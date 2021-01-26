@@ -40,7 +40,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 app.use('/api', router);
 
-app.listen(port, server, () => {
+app.listen(port, () => {
   log.info((`Server is listening at ${protocol}://${server}:${port}`), null);
 });
 

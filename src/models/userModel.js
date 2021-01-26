@@ -20,16 +20,14 @@ exports.createUser = async (user) => {
   }
 };
 
-exports.insertQrCode = async (user) => {
+exports.updateById = async (userId, fields) => {
   const queryBuilder = await getQueryBuilder();
   try {
     return queryBuilder.update(
       'user',
+      fields,
       {
-        qr_code: user.qr_code,
-      },
-      {
-        id: user.id,
+        id: userId,
       },
     );
   } catch (err) {

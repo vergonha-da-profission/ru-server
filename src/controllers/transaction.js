@@ -7,14 +7,12 @@ const clientEvents = require('../helpers/lib/events/clientEvents');
 exports.decreaseBalance = async (req, res, next) => {
   const transaction = req.body;
 
-  const validator = new Validator(
-    transaction, {
-      userId: 'required',
-      name: 'required|string',
-      description: 'required|string',
-      value: 'required',
-    },
-  );
+  const validator = new Validator(transaction, {
+    userId: 'required',
+    name: 'required|string',
+    description: 'required|string',
+    value: 'required',
+  });
 
   const inputIsValid = await validator.check();
 
@@ -54,9 +52,10 @@ exports.decreaseBalance = async (req, res, next) => {
 
     if (insertResponse.insertId) {
       // Balance ws
-      clientEvents.newEventBalance({ userId: transaction.userId, balance });
+      clientEvents.newEventBalance({ userId: transaction.userId, data: { balance } });
       // transaction ws
-      clientEvents.newEventTransaction({ ...transaction, type: 'outcoming' });
+      clientEvents.newEventTransaction({ userId: transaction.userId, data: { ...transaction, type: 'outcoming' } });
+
       return res.status(201).json(
         {
           user: {
@@ -79,13 +78,11 @@ exports.decreaseBalance = async (req, res, next) => {
 exports.increaseBalance = async (req, res, next) => {
   const transaction = req.body;
 
-  const validator = new Validator(
-    transaction, {
-      name: 'required|string',
-      description: 'required|string',
-      value: 'required',
-    },
-  );
+  const validator = new Validator(transaction, {
+    name: 'required|string',
+    description: 'required|string',
+    value: 'required',
+  });
 
   const inputIsValid = await validator.check();
 
@@ -115,9 +112,10 @@ exports.increaseBalance = async (req, res, next) => {
 
     if (insertResponse.insertId) {
       // Balance ws
-      clientEvents.newEventBalance({ userId: req.userId, balance });
+      clientEvents.newEventBalance({ userId: req.userId, data: { balance } });
+
       // transaction ws
-      clientEvents.newEventTransaction({ userId: req.userId, ...transaction, type: 'incoming' });
+      clientEvents.newEventTransaction({ userId: req.userId, data: { ...transaction, type: 'incoming' } });
       return res.status(201).json(
         {
           user: {

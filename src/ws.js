@@ -15,16 +15,15 @@ const closeConnection = (ws) => {
 
 exports.sendToTransaction = (event) => {
   const clients = transactionList[event.userId];
+
   if (clients === undefined) {
     return;
   }
-  const objToSend = JSON.stringify({ ...event });
 
-  if (clients !== undefined && objToSend !== undefined) {
-    clients.forEach((client) => {
-      client.send(objToSend);
-    });
-  }
+  clients.forEach((client) => {
+    console.log({ transaction: event.data });
+    client.send(JSON.stringify({ transaction: event.data }));
+  });
 };
 
 exports.sendToBalance = (event) => {
@@ -32,13 +31,10 @@ exports.sendToBalance = (event) => {
   if (clients === undefined) {
     return;
   }
-  const objToSend = JSON.stringify({ balance: parseFloat(event.data) });
 
-  if (clients !== undefined && objToSend !== undefined) {
-    clients.forEach((client) => {
-      client.send(objToSend);
-    });
-  }
+  clients.forEach((client) => {
+    client.send(JSON.stringify(event.data));
+  });
 };
 
 const addNewClient = (ws, req) => {

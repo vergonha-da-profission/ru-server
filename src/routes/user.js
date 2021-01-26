@@ -5,7 +5,7 @@ const userController = require('../controllers/user');
 
 const router = express.Router();
 
-router.post('/create', auth.verifyAuthentication, userController.createUser);
+router.post('/create', userController.createUser);
 
 /*
 * @endpoint: /profile

@@ -1,20 +1,81 @@
 const { Validator } = require('node-input-validator');
+const { Boleto } = require('node-boleto');
+const htmlPdf = require('html-pdf');
 
 const transactionModel = require('../models/transactionModel');
 const userModel = require('../models/userModel');
 const clientEvents = require('../helpers/lib/events/clientEvents');
 
-exports.decreaseBalance = async (req, res, next) => {
-  const transaction = req.body;
+exports.getBillBuffer = async (req, res) => {
+  const transaction = req.query;
 
   const validator = new Validator(
     transaction, {
-      userId: 'required',
-      name: 'required|string',
-      description: 'required|string',
       value: 'required',
     },
   );
+
+  const inputIsValid = await validator.check();
+
+  if (!inputIsValid || transaction.value <= 0) {
+    return res.status(422).json({
+      message: 'One or more fields are malformed',
+      code: 422,
+      error: validator.errors,
+    });
+  }
+  const banksName = ['bradesco', 'santander'];
+  const bankName = banksName[Math.floor(Math.random() * banksName.length)];
+  const bill = new Boleto({
+    banco: bankName, // nome do banco dentro da pasta 'banks'
+    data_emissao: new Date(),
+    data_vencimento: new Date(new Date().getTime() + 10 * 24 * 3600 * 1000), // 5 dias futuramente
+    valor: transaction.value * 100,
+    nosso_numero: '0000000',
+    numero_documento: '000000',
+    cedente: 'Vergonha da profission',
+    cedente_cnpj: '00000000000000',
+    agencia: '0000',
+    codigo_cedente: '0000000',
+    carteira: '000',
+  });
+  const options = {
+    type: 'pdf',
+    format: 'A4',
+    orientation: 'portrait',
+  };
+  let responseReturn;
+  try {
+    bill.renderHTML((html) => {
+      htmlPdf.create(html, options).toBuffer((err, buffer) => {
+        if (err) {
+          responseReturn = res.status(500).json({ message: 'Internal Error' });
+        }
+        responseReturn = res.status(200).json(
+          {
+            bill: {
+              pdf: buffer.toJSON().data,
+              code: bill.linha_digitavel,
+            },
+          },
+        );
+      })
+    });
+    return responseReturn;
+  } catch (err) {
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+exports.decreaseBalance = async (req, res, next) => {
+  const transaction = req.body;
+
+  const validator = new Validator(transaction, {
+    userId: 'required',
+    name: 'required|string',
+    description: 'required|string',
+    value: 'required',
+  });
 
   const inputIsValid = await validator.check();
 
@@ -52,9 +113,10 @@ exports.decreaseBalance = async (req, res, next) => {
 
     if (insertResponse.insertId) {
       // Balance ws
-      clientEvents.newEventBalance({ userId: transaction.userId, balance });
+      clientEvents.newEventBalance({ userId: transaction.userId, data: { balance } });
       // transaction ws
-      clientEvents.newEventTransaction({ ...transaction, type: 'outcoming' });
+      clientEvents.newEventTransaction({ userId: transaction.userId, data: { ...transaction, type: 'outcoming' } });
+
       return res.status(201).json(
         {
           user: {
@@ -77,13 +139,11 @@ exports.decreaseBalance = async (req, res, next) => {
 exports.increaseBalance = async (req, res, next) => {
   const transaction = req.body;
 
-  const validator = new Validator(
-    transaction, {
-      name: 'required|string',
-      description: 'required|string',
-      value: 'required',
-    },
-  );
+  const validator = new Validator(transaction, {
+    name: 'required|string',
+    description: 'required|string',
+    value: 'required',
+  });
 
   const inputIsValid = await validator.check();
 
@@ -112,9 +172,10 @@ exports.increaseBalance = async (req, res, next) => {
 
     if (insertResponse.insertId) {
       // Balance ws
-      clientEvents.newEventBalance({ userId: req.userId, balance });
+      clientEvents.newEventBalance({ userId: req.userId, data: { balance } });
+
       // transaction ws
-      clientEvents.newEventTransaction({ userId: req.userId, ...transaction, type: 'incoming' });
+      clientEvents.newEventTransaction({ userId: req.userId, data: { ...transaction, type: 'incoming' } });
       return res.status(201).json(
         {
           user: {

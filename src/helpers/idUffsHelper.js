@@ -80,7 +80,12 @@ async function fetchPortalData(page, authenticator, password) {
 }
 
 async function authenticate({ authenticator, password, imagePath }) {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+    ],
+  });
 
   const page = await browser.newPage();
   const pageMoodle = await browser.newPage();

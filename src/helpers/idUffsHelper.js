@@ -44,9 +44,6 @@ async function getUserImage(pageMoodle, idUffs, password, imagePath) {
   fs.writeFileSync(path.join(imagePath, imageName), res.data);
 
   const relativePathUrl = path.join(relativePath, imageName);
-
-  pageMoodle.close();
-8
   return relativePathUrl;
 }
 
@@ -81,8 +78,6 @@ async function fetchPortalData(page, authenticator, password) {
 
   const idUffs = await page.evaluate(() => document.querySelector('#frmPrincipal\\:j_idt193_content > table:nth-child(1) > tbody > tr > td:nth-child(2) > input[type=text]').value);
 
-  page.close();
-
   return {
     cpf, name: titleCase(name), email, idUffs,
   };
@@ -100,20 +95,19 @@ async function authenticate({ authenticator, password, imagePath }) {
   const page = await browser.newPage();
   const pageMoodle = await browser.newPage();
 
-  // const {
-  //   cpf, name, email, idUffs,
-  // } = await fetchPortalData(page, authenticator, password);
-  // const relativePathUrl = await getUserImage(pageMoodle, idUffs, password, imagePath);
+  const {
+    cpf, name, email, idUffs,
+  } = await fetchPortalData(page, authenticator, password);
 
-  const [user, relativePathUrl] = await Promise.all([
-    fetchPortalData(page, authenticator, password),
-    getUserImage(pageMoodle, authenticator, password, imagePath),
-  ]);
+  const relativePathUrl = await getUserImage(pageMoodle, idUffs, password, imagePath);
 
   await browser.close();
 
   return {
-    ...user,
+    cpf,
+    name,
+    email,
+    idUffs,
     image: relativePathUrl,
   };
 }

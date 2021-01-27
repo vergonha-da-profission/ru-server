@@ -44,6 +44,9 @@ async function getUserImage(pageMoodle, idUffs, password, imagePath) {
   fs.writeFileSync(path.join(imagePath, imageName), res.data);
 
   const relativePathUrl = path.join(relativePath, imageName);
+
+  pageMoodle.close();
+8
   return relativePathUrl;
 }
 
@@ -68,9 +71,7 @@ async function fetchPortalData(page, authenticator, password) {
 
   await page.waitForNavigation({ waitUntil: 'networkidle0' });
 
-  await page.goto('https://aluno.uffs.edu.br/aluno/restrito/academicos/atualizacao_cadastral_graduacao.xhtml', { timeout: 30000 });
-
-  await page.waitForSelector('#frmPrincipal\\:txtCPF', { timeout: 30000 });
+  await page.goto('https://aluno.uffs.edu.br/aluno/restrito/academicos/atualizacao_cadastral_graduacao.xhtml', { timeout: 30000, waitUntil: 'networkidle0' });
 
   const cpf = await page.evaluate(() => document.querySelector('#frmPrincipal\\:txtCPF').innerText);
 
@@ -79,6 +80,8 @@ async function fetchPortalData(page, authenticator, password) {
   const email = await page.evaluate(() => document.querySelector('#frmPrincipal\\:txtEmailIdUffs').value);
 
   const idUffs = await page.evaluate(() => document.querySelector('#frmPrincipal\\:j_idt193_content > table:nth-child(1) > tbody > tr > td:nth-child(2) > input[type=text]').value);
+
+  page.close();
 
   return {
     cpf, name: titleCase(name), email, idUffs,
@@ -97,18 +100,20 @@ async function authenticate({ authenticator, password, imagePath }) {
   const page = await browser.newPage();
   const pageMoodle = await browser.newPage();
 
-  const {
-    cpf, name, email, idUffs,
-  } = await fetchPortalData(page, authenticator, password);
-  const relativePathUrl = await getUserImage(pageMoodle, idUffs, password, imagePath);
+  // const {
+  //   cpf, name, email, idUffs,
+  // } = await fetchPortalData(page, authenticator, password);
+  // const relativePathUrl = await getUserImage(pageMoodle, idUffs, password, imagePath);
+
+  const [user, relativePathUrl] = await Promise.all([
+    fetchPortalData(page, authenticator, password),
+    getUserImage(pageMoodle, authenticator, password, imagePath),
+  ]);
 
   await browser.close();
 
   return {
-    cpf,
-    name,
-    email,
-    idUffs,
+    ...user,
     image: relativePathUrl,
   };
 }

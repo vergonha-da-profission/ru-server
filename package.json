@@ -57,6 +57,8 @@
 		"node-slogger": "^2.2.0",
 		"opn": "^6.0.0",
 		"puppeteer": "^5.5.0",
+		"puppeteer-extra": "^3.1.16",
+		"puppeteer-extra-plugin-stealth": "^2.6.7",
 		"qrcode": "^1.4.4",
 		"request": "^2.88.2",
 		"swagger-ui-express": "^4.1.4",

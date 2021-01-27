@@ -1,19 +1,25 @@
 /* eslint-disable no-undef */
 const axios = require('axios');
-const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 const { v4 } = require('uuid');
 
+const puppeteer = require('puppeteer-extra');
+
+// add stealth plugin and use defaults (all evasion techniques)
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+
+puppeteer.use(StealthPlugin());
+
 async function getUserImage(pageMoodle, idUffs, password, imagePath) {
-  await pageMoodle.goto('https://moodle-academico.uffs.edu.br/login/index.php');
+  await pageMoodle.goto('https://moodle-academico.uffs.edu.br/login/index.php', { timeout: 30000 });
   await pageMoodle.waitForSelector('#username');
 
   await pageMoodle.type('#username', idUffs);
   await pageMoodle.type('#password', password);
   await pageMoodle.click('#loginbtn');
 
-  await pageMoodle.waitForSelector('.page-header-image');
+  await pageMoodle.waitForSelector('.page-header-image', { timeout: 30000 });
 
   const userPictureUrl = await pageMoodle.evaluate(() => document.querySelector('.page-header-image > a > img').src);
 
@@ -60,11 +66,11 @@ async function fetchPortalData(page, authenticator, password) {
 
   await page.click('#loginButton_0');
 
-  await page.waitForSelector('#j_idt29\\:j_idt31_menu > li:nth-child(3) > a > span > span');
+  await page.waitForNavigation({ waitUntil: 'networkidle0' });
 
-  await page.click('#j_idt29\\:j_idt31_menu > li:nth-child(3) > a > span > span');
+  await page.goto('https://aluno.uffs.edu.br/aluno/restrito/academicos/atualizacao_cadastral_graduacao.xhtml', { timeout: 30000 });
 
-  await page.waitForSelector('#frmPrincipal\\:txtCPF');
+  await page.waitForSelector('#frmPrincipal\\:txtCPF', { timeout: 30000 });
 
   const cpf = await page.evaluate(() => document.querySelector('#frmPrincipal\\:txtCPF').innerText);
 
@@ -81,6 +87,7 @@ async function fetchPortalData(page, authenticator, password) {
 
 async function authenticate({ authenticator, password, imagePath }) {
   const browser = await puppeteer.launch({
+    headless: true,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',

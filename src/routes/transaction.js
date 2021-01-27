@@ -24,6 +24,6 @@ router.post('/debt', auth.verifyDebt, transactionController.decreaseBalance);
 * @args: auth_token
 * @returns: json
 */
-router.get('/bill', auth.verifyAuthentication, transactionController.getBillBuffer);
+router.get('/bank-silk', auth.verifyAuthentication, transactionController.getBillBuffer);
 
 module.exports = router;

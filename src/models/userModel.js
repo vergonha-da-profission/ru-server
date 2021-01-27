@@ -65,7 +65,7 @@ exports.findByEmail = async (username) => {
   const queryBuilder = await getQueryBuilder();
   try {
     return queryBuilder.select('name, password, id')
-      .where({ 'email = ': username })
+      .where({ 'id_uffs = ': username })
       .get('user');
   } catch (err) {
     throw new Error(err);

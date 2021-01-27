@@ -19,12 +19,14 @@
 		"setup": "npm run setup:dep && npm run setup:db",
 		"setup:dep": "npm install -G",
 		"setup:db": "node util/database/setupDatabase.js",
-		"start": "node src/app.js",
+		"start": "node ./src/app.js",
 		"dev": "nodemon src/app.js",
 		"dev:lint": "npm run lint & npm run dev",
 		"dev:lint:fix": "npm run lint:fix &npm run dev",
 		"lint": "nodemon --exec 'eslint .'",
-		"lint:fix": "nodemon --exec 'eslint . --fix'"
+		"lint:fix": "nodemon --exec 'eslint . --fix'",
+		"start:prod:all": "npm i && npm run setup:db && npm run dev",
+		"start:prod": "npm i && npm run dev"
 	},
 	"devDependencies": {
 		"eslint": "^7.12.0",
@@ -35,6 +37,7 @@
 	},
 	"dependencies": {
 		"avatar-builder": "^1.0.1",
+		"axios": "^0.21.1",
 		"body-parser": "^1.19.0",
 		"canvas": "^2.6.1",
 		"command-line-args": "^5.1.1",
@@ -42,22 +45,25 @@
 		"crypto": "^1.0.1",
 		"dotenv": "^8.2.0",
 		"express": "^4.17.1",
+		"html-pdf": "^2.2.0",
 		"js-yaml": "^3.14.0",
 		"jsonwebtoken": "^8.5.1",
 		"morgan": "^1.10.0",
 		"mysql": "^2.18.1",
+		"node-boleto": "^2.2.0",
 		"node-cache": "^5.1.2",
 		"node-input-validator": "^4.2.1",
 		"node-querybuilder": "^2.1.1",
 		"node-slogger": "^2.2.0",
 		"opn": "^6.0.0",
+		"puppeteer": "^5.5.0",
+		"puppeteer-extra": "^3.1.16",
+		"puppeteer-extra-plugin-stealth": "^2.6.7",
 		"qrcode": "^1.4.4",
 		"request": "^2.88.2",
 		"swagger-ui-express": "^4.1.4",
 		"uuid": "^8.3.2",
-		"ws": "^7.4.2",
-		"node-boleto": "^2.2.0",
-		"html-pdf": "^2.2.0"
+		"ws": "^7.4.2"
 	},
 	"repository": {
 		"type": "git",

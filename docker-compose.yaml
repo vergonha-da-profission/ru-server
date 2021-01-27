@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+  mariadb:
+    build: 
+      context: .
+      dockerfile: docker/mariadb.dockerfile
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_USER=vdp
+      - MARIADB_PASSWORD=vdp
+      - MARIADB_ROOT_PASSWORD=vdp
+      - MARIADB_DATABASE=ruDB
+    ports:
+      - 3306:3306
+  api:
+    tty: true
+    build: 
+      context: .
+      dockerfile: docker/node.dockerfile
+
+    depends_on:
+      - mariadb
+    ports:
+      - 3000:3000
+      - 3030:3030
+    volumes:
+      - ./:/app
+  phpmyadmin:
+    depends_on:
+      - mariadb
+    image: phpmyadmin/phpmyadmin
+
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: mariadb:3306

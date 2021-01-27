@@ -21,7 +21,6 @@ exports.sendToTransaction = (event) => {
   }
 
   clients.forEach((client) => {
-    console.log({ transaction: event.data });
     client.send(JSON.stringify({ transaction: event.data }));
   });
 };

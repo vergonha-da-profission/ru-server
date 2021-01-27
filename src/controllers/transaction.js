@@ -59,7 +59,7 @@ exports.getBillBuffer = async (req, res) => {
             },
           },
         );
-      })
+      });
     });
     return responseReturn;
   } catch (err) {
